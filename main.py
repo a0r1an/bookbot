@@ -1,7 +1,3 @@
-def main():
-    book_contents = get_book_contents('frankenstein.txt')
-    generate_output(book_contents)
-
 def word_count(string):
     wordList = string.split()
     return len(wordList)
@@ -28,20 +24,35 @@ def sort_dict(dict):
     return dict["num"]
 
 def get_book_contents(book):
-    with open(f"books/{book}") as f:
-       return f.read()
+    try:
+        with open(f"books/{book}") as f:
+            return f.read()
+    except FileNotFoundError:
+        print("Oh no! We couldnt find this book. Try running this program again and looking for a different book.")
+        print("You can also try to see if you mispelled the book name.")
+        return None
 
-def generate_output(book_contents):
+def main():
+    print('--- Welcome to word count usa --')
+    user_name = input("What is your name rider? ")
+    print(f"Well, Hello {user_name}, we hope to provide you with the best word counting experience")
+    book_name = input("Can you please provide me with the book you want to word count? ")
+    book_contents = get_book_contents(f"{book_name.lower()}.txt")
+    if book_contents == None:
+        return
     book_word_count = word_count(book_contents)
     character_appearance = char_appearance(book_contents)
     formatted_dictionary = convert_dict_to_list(character_appearance)
-
-    print('--- Welcome to word count usa --')
     print(f"{book_word_count} words found in the document")
-
-    for item in formatted_dictionary:
-        print(f"The {item['character']} character was found {item['num']} times")
-
+    print("We also have the ability to give you data on how often specific characters were used...")
+    should_character_count= input("Would you like to see that? ")
+    sanitize_answer = should_character_count.lower().strip()
+    yes_answers = ['yes', 'yup', 'yep', 'ya', 'y', 'sure', 'si', 'ja']
+    if sanitize_answer in yes_answers:
+        for item in formatted_dictionary:
+            print(f"The {item['character']} character was found {item['num']} times")
+    else:
+        print("No problem")
     print("-- Thanks for visiting word count usa --")
 
 main()
